@@ -74,13 +74,14 @@ rSet.init([{id:'1',message:'first test comment'},
 
 // get an RList by sorting the RSet by the message field
 var commentList = rSet.sort(function(a,b) { return cmp(a.message, b.message); });
-
+//console.log('commentList', commentList.getRows());
 
 // render the page
 app.get('/', index);
 function index(req, res) {
-  dqlSess = dql.register(req);
+  var dqlSess = dql.register(req);
   console.log('dqlID', req.dqlID)
+  //console.log('commentList', commentList.getRows());
   dqlSess.add('comment_list', commentList);
   
   res.render('index', { layout: 'layouts/base',

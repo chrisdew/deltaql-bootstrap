@@ -1,6 +1,7 @@
 (function() {
   window.dql = {};
   dql.dqlID = ko.observable();
+  dql.model = {};
 })();
 
 $(document).ready(function() {
@@ -22,6 +23,19 @@ $(document).ready(function() {
     console.warn('refresh');
     socket.disconnect();
     setTimeout(function() { location.reload(); }, 10000);
+  });
+  socket.on('lop', function(lop) {
+    console.info('lop', lop);
+    if (lop.lop === 'state') {
+      if (!dql.model[lop.key]) {
+        dql.model[lop.key] = ko.observableArray();
+      }
+      dql.model[lop.key](lop.rows);
+    }
+  });
+  socket.on('initialised', function() {
+    console.info('initialised');
+    ko.applyBindings(dql.model, $("#body")[0]);
   });
 });
 
