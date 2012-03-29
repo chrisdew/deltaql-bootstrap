@@ -1,6 +1,6 @@
 (function() {
   window.dql = {};
-  dql.sessionID = ko.observable();
+  dql.dqlID = ko.observable();
 })();
 
 $(document).ready(function() {
@@ -12,10 +12,16 @@ $(document).ready(function() {
   }); 
   socket.on('connect', function() {
     console.log("connect", this.socket);
-    if (!dql.sessionID) {
+    if (!dql.dqlID()) {
       console.error('dql.sessionID must be called in your (base) template.')
+      return;
     }
-    socket.on
+    socket.emit('auth', dql.dqlID());
+  });
+  socket.on('refresh', function() {
+    console.warn('refresh');
+    socket.disconnect();
+    setTimeout(function() { location.reload(); }, 10000);
   });
 });
 

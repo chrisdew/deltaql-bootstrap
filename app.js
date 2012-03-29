@@ -20,8 +20,14 @@ var express = require('express'),
                 //, cert: fs.readFileSync('./certificate.pem').toString()
               },
     app = express.createServer(),//options)
-    sio = require('socket.io');
+    deltaql = require('deltaql');
+    
+    //sio = require('socket.io');
 
+// utility functions
+function cmp(a, b) { return a > b? 1 : a < b ? -1 : 0; }
+
+// setup express
 app.configure(function(){
   app.set('view engine', 'ejs');
   app.set('views'      , __dirname + '/views'         );
@@ -52,16 +58,33 @@ app.dynamicHelpers({
     },
     sessionID: function(req, res) {
       return req.sessionID;
+    },
+    dqlID: function(req, res) {
+      return req.dqlID;
     }
   }
 );
 
+// create the database
+var rSet = new deltaql.RSet(); // RSet with no parent
+// add a couple of test messages
+rSet.init([{id:'1',message:'first test comment'},
+           {id:'2',message:'second test comment'}
+           ]);
+
+// get an RList by sorting the RSet by the message field
+var commentList = rSet.sort(function(a,b) { return cmp(a.message, b.message); });
+
+
 // render the page
 app.get('/', index);
 function index(req, res) {
+  dqlSess = dql.register(req);
+  console.log('dqlID', req.dqlID)
+  dqlSess.add('comment_list', commentList);
+  
   res.render('index', { layout: 'layouts/base',
                         title: 'DeltaQL Bootstrap',
-                        sessionID: req.sessionID
                         } );
 };
 
@@ -69,15 +92,10 @@ function index(req, res) {
 // start express listening
 app.listen(conf.server.port, conf.server.host);
 
-// start Socket.IO listening
-var io = sio.listen(app);
-io.configure(function() {
-  io.set('transports', conf.socketio.transports);
-});
-
-// make a new Proxy object for each connection
-io.sockets.on('connection', function(client) {
-  console.info('client connected', client);
+// start DeltaQL listening (via SocketIO)
+var dql = deltaql.sioListen(app);
+dql.configure(function() {
+  dql.set('transports', conf.dql.transports);
 });
 
 
