@@ -14,17 +14,19 @@
 var express = require('express'),
     fs = require('fs'),
     conf = process.conf = require('./conf'),
+    // uncomment the bits below to enable ssl
+    // see http://www.barricane.com/2011/11/24/openssl.html
     options = { //key: fs.readFileSync('./privatekey.pem').toString()
-              //, cert: fs.readFileSync('./certificate.pem').toString()
+                //, cert: fs.readFileSync('./certificate.pem').toString()
               },
     app = express.createServer(),//options)
     sio = require('socket.io');
 
 app.configure(function(){
-  //app.set('view engine', 'ejs');
+  app.set('view engine', 'ejs');
   app.set('views'      , __dirname + '/views'         );
   app.set('partials'   , __dirname + '/views/partials');
-  app.set('view engine', 'jade');
+  //app.set('view engine', 'jade');
   app.use(express.logger());
   app.use(express.methodOverride());
   app.use(express.bodyParser());
@@ -54,6 +56,15 @@ app.dynamicHelpers({
   }
 );
 
+// render the page
+app.get('/', index);
+function index(req, res) {
+  res.render('index', { layout: 'layouts/base',
+                        title: 'DeltaQL Bootstrap',
+                        sessionID: req.sessionID
+                        } );
+};
+
 
 // start express listening
 app.listen(conf.server.port, conf.server.host);
@@ -62,11 +73,11 @@ app.listen(conf.server.port, conf.server.host);
 var io = sio.listen(app);
 io.configure(function() {
   io.set('transports', conf.socketio.transports);
-  //io.set('logger', console);
 });
 
 // make a new Proxy object for each connection
 io.sockets.on('connection', function(client) {
+  console.info('client connected', client);
 });
 
 

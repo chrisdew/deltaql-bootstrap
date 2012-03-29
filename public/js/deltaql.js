@@ -1,3 +1,25 @@
+(function() {
+  window.dql = {};
+  dql.sessionID = ko.observable();
+})();
+
+$(document).ready(function() {
+  // make socketui connection
+  var socket_url = '';//'http://81.187.221.93:8000';
+  var socket = io.connect(socket_url, {secure: false, reconnect: true });
+  socket.on('disconnect', function() { 
+    console.log("disconnect", this.socket);
+  }); 
+  socket.on('connect', function() {
+    console.log("connect", this.socket);
+    if (!dql.sessionID) {
+      console.error('dql.sessionID must be called in your (base) template.')
+    }
+    socket.on
+  });
+});
+
+/*
 function initSocket(callback) {
   var timeout = false;
       sock = window.sock = new Sock();
@@ -31,3 +53,4 @@ function initSocket(callback) {
   
   return;
 }
+*/
