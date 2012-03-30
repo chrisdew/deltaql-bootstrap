@@ -14,6 +14,7 @@
 var express = require('express'),
     fs = require('fs'),
     conf = process.conf = require('./conf'),
+    uuid = require('node-uuid'),
     // uncomment the bits below to enable ssl
     // see http://www.barricane.com/2011/11/24/openssl.html
     options = { //key: fs.readFileSync('./privatekey.pem').toString()
@@ -77,18 +78,24 @@ var commentList = rSet.sort(function(a,b) { return cmp(a.message, b.message); })
 //console.log('commentList', commentList.getRows());
 
 // render the page
-app.get('/', index);
-function index(req, res) {
+app.get('/', function(req, res) {
   var dqlSess = dql.register(req);
   console.log('dqlID', req.dqlID)
   //console.log('commentList', commentList.getRows());
   dqlSess.add('comment_list', commentList);
   
   res.render('index', { layout: 'layouts/base',
-                        title: 'DeltaQL Bootstrap',
+                        title: 'DeltaQL Bootstrap'
                         } );
-};
-
+});
+app.post('/', function(req, res) {
+  console.log('new comment received', req.body);
+  var row = {id:uuid.v1(),message:req.body.message};
+  var rows = {};
+  rows[row.id] = row;
+  rSet.processSop({sop:'insert',rows:rows});
+  res.end();
+});
 
 // start express listening
 app.listen(conf.server.port, conf.server.host);

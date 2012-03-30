@@ -1,26 +1,25 @@
 <article>
-  <header>
-    <h1>article header h1</h1>
+  <section>
+    <h1>List of comments.</h1>
     <ul id="comment_list" data-bind="foreach: comment_list">
       <li data-bind="text: message"></li> 
     </ul>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales urna non odio egestas tempor. Nunc vel vehicula ante. Etiam bibendum iaculis libero, eget molestie nisl pharetra in. In semper consequat est, eu porta velit mollis nec.</p>
-  </header>
-  <section>
-    <h2>article section h2</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales urna non odio egestas tempor. Nunc vel vehicula ante. Etiam bibendum iaculis libero, eget molestie nisl pharetra in. In semper consequat est, eu porta velit mollis nec. Curabitur posuere enim eget turpis feugiat tempor. Etiam ullamcorper lorem dapibus velit suscipit ultrices. Proin in est sed erat facilisis pharetra.</p>
+    <form>
+      <input id="input" type="text"></input>
+      <input id="button" type="button" value="Submit via Ajax"></input>
+    </form>
+    <script type="text/javascript">
+      // script only inline for contextual purposes
+      $('#button').click(function() {
+        //alert($('#input').val());
+        $.ajax({type:'POST', data:{message:$('#input').val()}});
+        $('#input').val('');
+      });
+    </script>
   </section>
-  <section>
-    <h2>article section h2</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales urna non odio egestas tempor. Nunc vel vehicula ante. Etiam bibendum iaculis libero, eget molestie nisl pharetra in. In semper consequat est, eu porta velit mollis nec. Curabitur posuere enim eget turpis feugiat tempor. Etiam ullamcorper lorem dapibus velit suscipit ultrices. Proin in est sed erat facilisis pharetra.</p>
-  </section>
-  <footer>
-    <h3>article footer h3</h3>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales urna non odio egestas tempor. Nunc vel vehicula ante. Etiam bibendum iaculis libero, eget molestie nisl pharetra in. In semper consequat est, eu porta velit mollis nec. Curabitur posuere enim eget turpis feugiat tempor.</p>
-  </footer>
 </article>
 <aside>
-  <h3>aside</h3>
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales urna non odio egestas tempor. Nunc vel vehicula ante. Etiam bibendum iaculis libero, eget molestie nisl pharetra in. In semper consequat est, eu porta velit mollis nec. Curabitur posuere enim eget turpis feugiat tempor. Etiam ullamcorper lorem dapibus velit suscipit ultrices.</p>
+  <h3>DeltraQL Bootstrap</h3>
+  <p>This is the simplest possible WebApp built on DeltaQL.  Fork this repo and use it as the base of your DeltaQL WebApp.</p>
 </aside>
         
