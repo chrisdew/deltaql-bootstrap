@@ -1,6 +1,6 @@
 <article>
   <section>
-    <h1>List of comments.</h1>
+    <h1>Alphabetical list of comments.</h1>
     <ul id="comment_list" data-bind="foreach: comment_list">
       <li data-bind="text: message"></li> 
     </ul>
@@ -9,17 +9,29 @@
       <input id="button" type="button" value="Submit via Ajax"></input>
     </form>
     <script type="text/javascript">
-      // script only inline for contextual purposes
+      // script only inlined for contextual purposes
       $('#button').click(function() {
-        //alert($('#input').val());
-        $.ajax({type:'POST', data:{message:$('#input').val()}});
-        $('#input').val('');
+        postComment();
+        return false;
       });
+      $('#input').keypress(function(event) {
+        if (event.keyCode === 13 && !event.shiftKey) {
+          postComment();
+          return false; // don't allow the newline to be put in the text area
+        }
+        return true;
+      });
+      function postComment() {
+        var val = $('#input').val();
+        if (val.length === 0) return; 
+        $.ajax({type:'POST', data:{message:val}});
+        $('#input').val('').focus();
+      }
     </script>
   </section>
 </article>
 <aside>
-  <h3>DeltraQL Bootstrap</h3>
+  <h3>DeltaQL Bootstrap</h3>
   <p>This is the simplest possible WebApp built on DeltaQL.  Fork this repo and use it as the base of your DeltaQL WebApp.</p>
 </aside>
         

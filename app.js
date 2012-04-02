@@ -91,9 +91,7 @@ app.get('/', function(req, res) {
 app.post('/', function(req, res) {
   console.log('new comment received', req.body);
   var row = {id:uuid.v1(),message:req.body.message};
-  var rows = {};
-  rows[row.id] = row;
-  rSet.processSop({sop:'insert',rows:rows});
+  rSet.processSop({sop:'insert',row:row});
   res.end();
 });
 
